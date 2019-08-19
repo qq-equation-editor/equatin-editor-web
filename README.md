@@ -1,2 +1,2 @@
-# equatin-editor-web
-equatin-editor-web
+# equation-editor-web
+equation-editor-web
