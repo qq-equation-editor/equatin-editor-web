@@ -72,22 +72,6 @@
                         <!--<input type="button" id="tempb" value="temp">-->
 
                         <div class="symbol-button-group">
-                            <div class="symbol-button">+</div>
-                            <div class="symbol-button">-</div>
-                            <div class="symbol-button">+</div>
-                            <div class="symbol-button">-</div>
-                            <div class="symbol-button">+</div>
-                            <div class="symbol-button">-</div>
-                            <div class="symbol-button">+</div>
-                            <div class="symbol-button">-</div>
-                            <div class="symbol-button">+</div>
-                            <div class="symbol-button">-</div>
-                            <div class="symbol-button">+</div>
-                            <div class="symbol-button">-</div>
-                            <div class="symbol-button">+</div>
-                            <div class="symbol-button">-</div>
-                            <div class="symbol-button">+</div>
-
                         </div>
                     </div>
 
@@ -241,11 +225,24 @@
 //            console.log($('#temp').val())
 //            mathField.write($('#temp').val());
 //        })
+		
         $('#template1').click(function () {
             mathField.write("{\\frac{{a}}{{b}} \\pm \\frac{{c}}" +
                 "{{d}}=\\frac{{ad \\pm bc}}{{bd}}}\n");
             mathField.focus();
         })
+		var box1 =["+","-","×","÷","*","⸳","∙","∘","±","∓","=","≠","≡","≙","≜","≐","∽","≈","≃","≌","∝","&gt;","&lt;","≤","≥","≪","≫","≺","≻","⊲","⊳","∧","∨","∪","∩","⊂","⊃","⊆","⊇","⊄","⊅","∈","∉","∃","∄","∀","¬","∆","∇","○","□","▭","△","▱","⋄","⊕","⊗","⊙","∅","∠","∡","∢","∵","∴","∶","∣","∥","⊥","⊤","⊢","⊣"]
+		console.log(box1.length)
+		for(i = 0; i < box1.length; ++i)
+		{
+			$('.symbol-button-group').append('  <div id="wode'+ i +'" class="symbol-button">'+ box1[i] +'</div>')
+			$('#wode' + i).click(function () {
+				console.log(this);			
+				mathField.write(box1[i]);
+				mathField.focus();
+				mathField.keystroke('Left')
+			})
+		}
         $('.symbol-button-group').append('  <div id="wode" class="symbol-button">ala</div>' +
             '<div style="clear: both;"></div>')
         $('#wode').click(function () {
