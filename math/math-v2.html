@@ -39,11 +39,45 @@
 
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">登录</a></li>
+                <li><a href="#" onclick="$('#loginPanel').modal('show');">登录</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="loginPanel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">登录</h4>
+            </div>
+            <div class="modal-body">
+
+                <form role="form">
+                    <fieldset>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="输入账号" id="account" type="text" autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control" placeholder="输入密码" id="password" type="password"
+                                   value="">
+                        </div>
+
+                        <!-- Change this to a button or input when using this as a form -->
+                        <a href="javascrip:void(0);" onclick="registerOrLogin()"
+                           class="btn btn-lg btn-success btn-block">注册或登录</a>
+                    </fieldset>
+                </form>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 <div class="container-fluid">
     <!--<div class="row">-->
@@ -102,6 +136,18 @@
 
                         <div id="math-field" class="equation-editor" style="font-size: 40px"></div>
 
+                        <div class="form-group">
+                            <div class="col-sm-2  col-sm-offset-8 control-label">
+                                <input id="equationName" type="text" class="form-control" placeholder="公式名称">
+                            </div>
+                            <div class="col-sm-2 ">
+                                <div class="text-left" style="padding-top: 7px;margin-left:-20px ">
+                                    <button onclick="saveEquation()" type="button" class="btn btn-info">保存公式</button>
+                                </div>
+
+                            </div>
+                        </div>
+
 
                         <!--<textarea id="temp"></textarea>-->
 
@@ -139,11 +185,12 @@
                         <div class="btn-group custom-button-group" style="width: 48%">
                             <button type="button" style="width: 100%" class="btn btn-default dropdown-toggle"
                                     data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
+                                    aria-haspopup="true" aria-expanded="false"
+                                    onclick="myEquation()">
                                 我的公式
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu">
+                            <ul id="myEquation" class="dropdown-menu">
                                 <li><a href="#">Action</a></li>
                                 <li><a href="#">Another action</a></li>
                                 <li><a href="#">Something else here</a></li>
@@ -213,22 +260,6 @@
 
     $(function () {
 
-
-//        $('#template1').click(function () {
-//            mathField.write("{\\frac{{a}}{{b}} \\pm \\frac{{c}}" +
-//                "{{d}}=\\frac{{ad \\pm bc}}{{bd}}}\n");
-//            mathField.focus();
-//        })
-
-
-//        $('.symbol-button-group').append('  <div id="wode" class="symbol-button">ala</div>' +
-//            '<div style="clear: both;"></div>')
-//        $('#wode').click(function () {
-//            mathField.write("^{}_{}");
-//            mathField.focus();
-//            mathField.keystroke('Left')
-//        })
-
         initSymbol();
         getTemplateEquation();
 
@@ -278,6 +309,95 @@
                 alert('网络错误');
             }
         })
+    }
+
+    function registerOrLogin() {
+        $.ajax({
+            url: host + '/api/pb/v1/user/register-or-login',
+            type: 'POST',
+            dataType: 'JSON',
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain: true,
+            data: {
+                userName: $('#account').val(),
+                password: $('#password').val()
+            },
+            success: function (data) {
+                if (data.errorCode === 0) {
+                    alert('succ')
+                    $('#loginPanel').modal('hide');
+                }
+
+            },
+            error: function (data) {
+                alert('网络错误');
+            }
+        })
+    }
+
+    function saveEquation() {
+        $.ajax({
+            url: host + '/api/pb/v1/user/add-equation',
+            type: 'POST',
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain: true,
+            data: {
+                equationName: $('#equationName').val(),
+                equationLatex: mathField.latex()
+            },
+            success: function (data) {
+                if (data.errorCode === 0) {
+                    alert('succ')
+                    // $('#loginPanel').modal('hide');
+                } else {
+                    alert('fail')
+                }
+
+            },
+            error: function (data) {
+                alert('网络错误');
+            }
+        })
+    }
+
+    function myEquation() {
+        $.ajax({
+            url: host + '/api/pb/v1/user/equation',
+            type: 'GET',
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain: true,
+            data: {
+                equationName: $('#equationName').val(),
+                equationLatex: mathField.latex()
+            },
+            success: function (data) {
+                if (data.baseResponse.errorCode === 0) {
+                    $('#myEquation').html('');
+                    for (var i = 0; i < data.equations.length; i++) {
+                        var item = data.equations[i];
+                        var html = $('<li><a href="#">' + item.equationName + '</a></li>');
+                        $('#myEquation').append(html);
+                        $(html).click(function () {
+                            mathField.write(item.equationLatex);
+                            mathField.focus();
+                        })
+                    }
+                } else {
+                    alert('fail')
+                }
+
+            },
+            error: function (data) {
+                alert('网络错误');
+            }
+        })
+
     }
 
     //    mathField.latex('2^{\\frac{3}{2}}');
