@@ -6,7 +6,7 @@
 
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="custom/custom-common.css"/>
-    <link rel="stylesheet" href="matrix/mathquill.css"/>
+    <link rel="stylesheet" href="matrix/v1/mathquill.css"/>
 
 </head>
 
@@ -224,7 +224,7 @@
 
 
 <script src="jquery.js"></script>
-<script src="matrix/mathquill.js"></script>
+<script src="matrix/v1/mathquill.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 
 <script>
@@ -271,9 +271,9 @@
             type: 'GET',
             success: function (data) {
                 $('#templateEquationGroup').html('');
-                for (var i = 0; i < data.length; i++) {
-                    var item = data[i];
-                    var html = $(' <a href="#" class="thumbnail">' +
+                for (let i = 0; i < data.length; i++) {
+                    let item = data[i];
+                    let html = $(' <a href="#" class="thumbnail">' +
                         '<img src="' + item.equationImg + '" alt="' + item.equationName + '"></a>');
                     $('#templateEquationGroup').append(html);
                     $(html).click(function () {
@@ -293,9 +293,9 @@
             url: host + '/api/pb/v1/equation-editor/all-symbol',
             type: 'GET',
             success: function (data) {
-                for (var i = 0; i < data.length; i++) {
-                    var item = data[i];
-                    var html = $('<div class="symbol-button">' + item.symbolHtmlContent + '</div>');
+                for (let i = 0; i < data.length; i++) {
+                    let item = data[i];
+                    let html = $('<div class="symbol-button">' + item.symbolHtmlContent + '</div>');
                     $('.symbol-button-group').append(html);
                     $(html).click(function () {
                         mathField.write(item.symbolLatex);
@@ -379,9 +379,9 @@
             success: function (data) {
                 if (data.baseResponse.errorCode === 0) {
                     $('#myEquation').html('');
-                    for (var i = 0; i < data.equations.length; i++) {
-                        var item = data.equations[i];
-                        var html = $('<li><a href="#">' + item.equationName + '</a></li>');
+                    for (let i = 0; i < data.equations.length; i++) {
+                        let item = data.equations[i];
+                        let html = $('<li><a href="#">' + item.equationName + '</a></li>');
                         $('#myEquation').append(html);
                         $(html).click(function () {
                             mathField.write(item.equationLatex);
