@@ -39,7 +39,10 @@
 
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" onclick="$('#loginPanel').modal('show');">登录</a></li>
+                <li><a id="userName" style="display: none" class="navbar-brand" href="#" onclick="logout()">xxx</a></li>
+
+                <li id="loginButton"><a href="#" onclick="$('#loginPanel').modal('show');">登录</a></li>
+                <li id="logoutButton" style="display: none"><a href="#" onclick="logout()">登出</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -68,6 +71,7 @@
                         </div>
 
                         <!-- Change this to a button or input when using this as a form -->
+
                         <a href="javascrip:void(0);" onclick="registerOrLogin()"
                            class="btn btn-lg btn-success btn-block">注册或登录</a>
                     </fieldset>
@@ -98,30 +102,8 @@
                     </div>
                     <div class="panel-body"><!--style="background-color: #cccdcf;"-->
                         <p>LaTeX of what you typed: <span id="latex"></span></p>
-                        <!--<p>LaTeX of what you typed: <span id="html"></span></p>-->
-
-                        <!--<input type="button" id="sqrt" value="sqrt">-->
-                        <!--<input type="button" id="template" value="template">-->
-                        <!--<input type="button" id="template2" value="template2">-->
-                        <!--<input type="button" id="tempb" value="temp">-->
 
                         <div class="symbol-button-group">
-                            <!--<div class="symbol-button">+</div>-->
-                            <!--<div class="symbol-button">-</div>-->
-                            <!--<div class="symbol-button">+</div>-->
-                            <!--<div class="symbol-button">-</div>-->
-                            <!--<div class="symbol-button">+</div>-->
-                            <!--<div class="symbol-button">-</div>-->
-                            <!--<div class="symbol-button">+</div>-->
-                            <!--<div class="symbol-button">-</div>-->
-                            <!--<div class="symbol-button">+</div>-->
-                            <!--<div class="symbol-button">-</div>-->
-                            <!--<div class="symbol-button">+</div>-->
-                            <!--<div class="symbol-button">-</div>-->
-                            <!--<div class="symbol-button">+</div>-->
-                            <!--<div class="symbol-button">-</div>-->
-                            <!--<div class="symbol-button">+</div>-->
-
                         </div>
                     </div>
 
@@ -138,18 +120,16 @@
 
                         <div class="form-group">
                             <div class="col-sm-2  col-sm-offset-8 control-label">
-                                <input id="equationName" type="text" class="form-control" placeholder="公式名称">
+                                <input id="equationName" type="text" class="form-control" placeholder="输入公式名称">
                             </div>
                             <div class="col-sm-2 ">
-                                <div class="text-left" style="padding-top: 7px;margin-left:-20px ">
+                                <div class="text-left" style="padding-top: 7px;/*margin-left:-20px*/ ">
                                     <button onclick="saveEquation()" type="button" class="btn btn-info">保存公式</button>
                                 </div>
 
                             </div>
                         </div>
 
-
-                        <!--<textarea id="temp"></textarea>-->
 
                     </div>
                 </div>
@@ -190,23 +170,19 @@
                                 我的公式
                                 <span class="caret"></span>
                             </button>
-                            <ul id="myEquation" class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
+                            <ul id="myEquation" class="dropdown-menu" style="width: max-content;min-width: 150px">
+
                             </ul>
                         </div>
 
                         <div id="templateEquationGroup" style="padding-top: 10px;">
-                            <!--<a href="#" id="template1" class="thumbnail">-->
-                            <!--<img src="img.png" alt="...">-->
-                            <!--</a>-->
 
-                            <!--<a href="#" class="thumbnail">-->
-                            <!--<img src="img.png" alt="...">-->
-                            <!--</a>-->
+                            <div class="btn-group" role="group" aria-label="...">
+                                <!--<button type="button" class="btn btn-default">Left</button>-->
+                                <button type="button" class="btn btn-default">Middle</button>
+                                <button type="button" class="btn btn-default">Right</button>
+                            </div>
+
                         </div>
 
 
@@ -220,6 +196,7 @@
 
     </div>
 
+
 </div>
 
 
@@ -228,12 +205,19 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 
 <script>
-    var host = 'http://localhost/eqed';
+
+    function test(e) {
+
+
+    }
+
+    // var host = 'http://localhost/eqed';
+    var host = 'http://144.34.214.159/eqed';
+
 
 
     var mathFieldSpan = document.getElementById('math-field');
     var latexSpan = document.getElementById('latex');
-    //    var html = document.getElementById('html');
 
 
     var MQ = MathQuill.getInterface(2); // for backcompat
@@ -259,11 +243,10 @@
     });
 
     $(function () {
-
+        isLogin();
         initSymbol();
         getTemplateEquation();
-
-    })
+    });
 
     function getTemplateEquation() {
         $.ajax({
@@ -273,7 +256,7 @@
                 $('#templateEquationGroup').html('');
                 for (let i = 0; i < data.length; i++) {
                     let item = data[i];
-                    let html = $(' <a href="#" class="thumbnail">' +
+                    let html = $(' <a class="thumbnail">' +
                         '<img src="' + item.equationImg + '" alt="' + item.equationName + '"></a>');
                     $('#templateEquationGroup').append(html);
                     $(html).click(function () {
@@ -300,7 +283,9 @@
                     $(html).click(function () {
                         mathField.write(item.symbolLatex);
                         mathField.focus();
-//                        mathField.keystroke('Left')
+                        if (item.isLeft) {
+                            mathField.keystroke('Left')
+                        }
                     })
                 }
                 $('.symbol-button-group').append('<div style="clear: both;"></div>');
@@ -326,7 +311,14 @@
             },
             success: function (data) {
                 if (data.errorCode === 0) {
-                    alert('succ')
+                    // alert('succ')
+                    $('#loginPanel').modal('hide');
+                    $('#userName').text($('#account').val() + ',欢迎您');
+                    $('#userName').show();
+                    $('#loginButton').hide();
+                    $('#logoutButton').show();
+                } else {
+                    alert(data.errorMessage);
                     $('#loginPanel').modal('hide');
                 }
 
@@ -352,9 +344,8 @@
             success: function (data) {
                 if (data.errorCode === 0) {
                     alert('succ')
-                    // $('#loginPanel').modal('hide');
                 } else {
-                    alert('fail')
+                    alert(data.errorMessage);
                 }
 
             },
@@ -381,15 +372,23 @@
                     $('#myEquation').html('');
                     for (let i = 0; i < data.equations.length; i++) {
                         let item = data.equations[i];
-                        let html = $('<li><a href="#">' + item.equationName + '</a></li>');
-                        $('#myEquation').append(html);
-                        $(html).click(function () {
+                        let html = $('<li><span >' + item.equationName + '</span></li>');
+                        html.click(function () {
                             mathField.write(item.equationLatex);
                             mathField.focus();
-                        })
+                        });
+                        let button=$('<button type="button" class="btn btn-xs">删除</button>');
+                        button.click(function () {
+                            deleteEquation(item.id);
+                            event.stopPropagation()
+                        });
+                        html.append(button);
+                        $('#myEquation').append(html);
+
                     }
+
                 } else {
-                    alert('fail')
+                    alert(data.baseResponse.errorMessage);
                 }
 
             },
@@ -397,10 +396,79 @@
                 alert('网络错误');
             }
         })
-
     }
 
-    //    mathField.latex('2^{\\frac{3}{2}}');
+    function deleteEquation(equationId) {
+        $.ajax({
+            url: host + '/api/pb/v1/user/delete-equation',
+            type: 'POST',
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain: true,
+            data: {
+                equationId: equationId
+            },
+            success: function (data) {
+                if (data.errorCode === 0) {
+                    alert('succ')
+                    myEquation();
+                } else {
+                    alert(data.errorMessage);
+                }
+
+            },
+            error: function (data) {
+                alert('网络错误');
+            }
+        })
+    }
+
+    function logout() {
+        $.ajax({
+            url: host + '/api/pb/v1/user/logout',
+            type: 'POST',
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain: true,
+            success: function (data) {
+                if (data.errorCode === 0) {
+                    $('#userName').text('');
+                    $('#userName').hide();
+                    $('#logoutButton').hide();
+                    $('#loginButton').show();
+                }
+            },
+            error: function (data) {
+                alert('网络错误');
+            }
+        })
+    }
+
+    function isLogin() {
+        $.ajax({
+            url: host + '/api/pb/v1/user/is-login',
+            type: 'GET',
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain: true,
+            success: function (data) {
+                if (data.baseResponse.errorCode === 0) {
+                    $('#userName').text(data.userName + ',欢迎您');
+                    $('#userName').show();
+                    $('#logoutButton').show();
+                    $('#loginButton').hide();
+                }
+
+            },
+            error: function (data) {
+                alert('网络错误');
+            }
+        })
+    }
+
 </script>
 
 </body>
