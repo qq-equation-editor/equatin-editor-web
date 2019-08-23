@@ -11,11 +11,12 @@
 .equation-editor {
     width: 100%;
     min-height: 300px;
-    font-size: 40px;
+    font-size: 20px;
 }
 
 .symbol-button-group {
-    width: 340px;
+    /*width: 340px;*/
+    max-width: 680px;
     padding: 10px;
     background-color: #cccdcf;
     border-radius: 4px;
@@ -83,4 +84,8 @@
 #myEquation li{
     min-height: 60px;
     border-bottom:1px solid #cccdcf
+}
+
+#math-field .mq-root-block{
+    padding-top: 10px;
 }
